@@ -31,3 +31,5 @@ set hive.tez.min.partition.factor=0.01;
 set hive.optimize.sort.dynamic.partition.threshold=0;
 
 set hive.exec.reducers.bytes.per.reducer=536870912;
+set hive.exec.orc.default.compress=SNAPPY;
+set hive.exec.orc.default.stripe.size=268435456
