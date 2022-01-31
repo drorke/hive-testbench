@@ -1,4 +1,4 @@
--- set hivevar:DB=tpcds_bin_partitioned_orc_10000
+set hivevar:DB=tpcds_10000_orc_snappy;
 
 alter table customer_address add constraint ${DB}_pk_ca primary key (ca_address_sk) disable novalidate rely;
 alter table customer_demographics add constraint ${DB}_pk_cd primary key (cd_demo_sk) disable novalidate rely;
@@ -140,20 +140,23 @@ alter table web_sales add constraint ${DB}_ws_ws foreign key  (ws_web_site_sk) r
 alter table web_site add constraint ${DB}_web_d1 foreign key  (web_close_date_sk) references date_dim (d_date_sk) disable novalidate rely;
 alter table web_site add constraint ${DB}_web_d2 foreign key (web_open_date_sk) references date_dim (d_date_sk) disable novalidate rely;
 
-alter table store change column s_store_id s_store_id string constraint ${DB}_strid_nn not null disable novalidate rely;
-alter table call_center change column cc_call_center_id cc_call_center_id string constraint ${DB}_ccid_nn not null disable novalidate rely;
-alter table catalog_page change column cp_catalog_page_id cp_catalog_page_id string constraint ${DB}_cpid_nn not null disable novalidate rely;
-alter table web_site change column web_site_id web_site_id string constraint ${DB}_wsid_nn not null disable novalidate rely;
-alter table web_page change column wp_web_page_id wp_web_page_id string constraint ${DB}_wpid_nn not null disable novalidate rely;
-alter table warehouse change column w_warehouse_id w_warehouse_id string constraint ${DB}_wid_nn not null disable novalidate rely;
-alter table customer change column c_customer_id c_customer_id string constraint ${DB}_cid_nn not null disable novalidate rely;
-alter table customer_address change column ca_address_id ca_address_id string constraint ${DB}_caid_nn not null disable novalidate rely;
-alter table date_dim change column d_date_id d_date_id string constraint ${DB}_did_nn not null disable novalidate rely;
-alter table item change column i_item_id i_item_id string constraint ${DB}_itid_nn not null disable novalidate rely;
-alter table promotion change column p_promo_id p_promo_id string constraint ${DB}_pid_nn not null disable novalidate rely;
-alter table reason change column r_reason_id r_reason_id string constraint ${DB}_rid_nn not null disable novalidate rely;
-alter table ship_mode change column sm_ship_mode_id sm_ship_mode_id string constraint ${DB}_smid_nn not null disable novalidate rely;
-alter table time_dim change column t_time_id t_time_id string constraint ${DB}_tid_nn not null disable novalidate rely;
+-- Not null constraints
+alter table store change column s_store_id s_store_id varchar(16) constraint ${DB}_strid_nn not null disable novalidate rely;
+alter table call_center change column cc_call_center_id cc_call_center_id varchar(16) constraint ${DB}_ccid_nn not null disable novalidate rely;
+alter table catalog_page change column cp_catalog_page_id cp_catalog_page_id varchar(16) constraint ${DB}_cpid_nn not null disable novalidate rely;
+alter table web_site change column web_site_id web_site_id varchar(16) constraint ${DB}_wsid_nn not null disable novalidate rely;
+alter table web_page change column wp_web_page_id wp_web_page_id varchar(16) constraint ${DB}_wpid_nn not null disable novalidate rely;
+alter table warehouse change column w_warehouse_id w_warehouse_id varchar(16) constraint ${DB}_wid_nn not null disable novalidate rely;
+alter table customer change column c_customer_id c_customer_id varchar(16) constraint ${DB}_cid_nn not null disable novalidate rely;
+alter table customer_address change column ca_address_id ca_address_id varchar(16) constraint ${DB}_caid_nn not null disable novalidate rely;
+alter table date_dim change column d_date_id d_date_id varchar(16) constraint ${DB}_did_nn not null disable novalidate rely;
+alter table item change column i_item_id i_item_id varchar(16) constraint ${DB}_itid_nn not null disable novalidate rely;
+alter table promotion change column p_promo_id p_promo_id varchar(16) constraint ${DB}_pid_nn not null disable novalidate rely;
+alter table reason change column r_reason_id r_reason_id varchar(16) constraint ${DB}_rid_nn not null disable novalidate rely;
+alter table ship_mode change column sm_ship_mode_id sm_ship_mode_id varchar(16) constraint ${DB}_smid_nn not null disable novalidate rely;
+alter table time_dim change column t_time_id t_time_id varchar(16) constraint ${DB}_tid_nn not null disable novalidate rely;
 
-alter table customer change column c_customer_id c_customer_id string constraint ${DB}_cid_uq unique disable novalidate rely;
-
+-- Unique constraints
+-- Not clear whether a strict reading of the TPC-DS spec guarantees c_customer_id is uniuqe but seems like a reasonable assumption
+-- and verified it's unique for actual TPC generated data.  Would we benefit from other unique constraints?
+alter table customer change column c_customer_id c_customer_id varchar(16) constraint ${DB}_cid_uq unique disable novalidate rely;
